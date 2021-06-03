@@ -13,6 +13,7 @@ class InputViewController: UIViewController {
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var contentTextView: UITextView!
     @IBOutlet weak var datePicker: UIDatePicker!
+    @IBOutlet weak var categoryTextField: UITextField!
     
     let realm = try! Realm()
     var task: Task!
@@ -27,6 +28,7 @@ class InputViewController: UIViewController {
         titleTextField.text = task.title
         contentTextView.text = task.contents
         datePicker.date = task.date
+        categoryTextField.text = task.category
     }
     
     @objc func dismissKeyboard() {
@@ -38,6 +40,7 @@ class InputViewController: UIViewController {
             self.task.title = self.titleTextField.text!
             self.task.contents = self.contentTextView.text
             self.task.date = self.datePicker.date
+            self.task.category = self.categoryTextField.text!
             self.realm.add(self.task, update: .modified)
         }
         
@@ -60,6 +63,7 @@ class InputViewController: UIViewController {
         } else {
             content.body = task.contents
         }
+        
         content.sound = UNNotificationSound.default
         
         let calendar = Calendar.current

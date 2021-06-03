@@ -10,15 +10,19 @@ import RealmSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var categorySearchTextField: UITextField!
     
     let realm = try! Realm()
-    let taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+    var taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         tableView.delegate = self
         tableView.dataSource = self
+        
+
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return taskArray.count
@@ -95,6 +99,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     // 入力画面から戻ってきた時に TableView を更新させる
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    @IBAction func categorySearchChanged(_ sender: Any) {
+        if self.categorySearchTextField.text == "" {
+            taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+            tableView.reloadData()
+            return
+        }
+        let predicate = NSPredicate(format: "category contains %@", self.categorySearchTextField.text!)
+        let filteredTask = taskArray.filter(predicate)
+
+        taskArray = filteredTask
         tableView.reloadData()
     }
 }
